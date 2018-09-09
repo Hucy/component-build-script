@@ -1,0 +1,6 @@
+{
+  "node": {
+    "script-type": "ts",
+    "entry": "./src/index"
+  }
+}
