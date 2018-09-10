@@ -1,0 +1,99 @@
+# https://circleci.com/docs/2.0/language-javascript/
+
+defaults: &defaults
+  working_directory: ~/project/cbs
+  docker:
+    - image: circleci/node:8
+version: 2
+jobs:
+  install:
+    <<: *defaults
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - cbs
+  test_src:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: npm test
+      - run: npm run cov
+  test_lib:
+    <<: *defaults
+    environment:
+      FILE_SOURCE: lib
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: npm test
+  test_module:
+    <<: *defaults
+    environment:
+      FILE_SOURCE: module
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: npm test
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - cbs
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run: npm publish
+    
+workflows:
+  version: 2
+  test_build:
+    jobs:
+      - install
+      - test_src:
+          requires:
+            - install
+      - build:
+          requires:
+            - test_src
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: /master/
+      # - test_lib:
+      #     requires:
+      #       - build
+      # - test_module:
+      #     requires:
+      #       - build
+      - hold:
+          type: approval
+          requires:
+            - build
+          #  - test_lib
+          #  - test_module
+      - publish:
+          requires:
+            - hold
