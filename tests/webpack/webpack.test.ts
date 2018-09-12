@@ -5,44 +5,88 @@ import supertest from 'supertest';
 import { IArguments, ICommandConf } from '~src/scripts/config';
 import { build, start } from '~src/scripts/webpack';
 
-const conf: ICommandConf = {
-  'script-type': 'ts',
-  entry: './tests/webpack/index',
-};
-
 beforeEach(() => {
   jest.resetModules();
 });
 
-afterAll(() => {
+function clean() {
   const cwd = process.cwd();
   const tempDir = path.resolve(cwd, `./${_FILE_SOURCE_}/scripts/.temp`);
   removeSync(tempDir);
   removeSync(`${cwd}/build`);
+}
+
+beforeAll(() => {
+  clean();
 });
 
-test('webpack dev server should be start', async () => {
-  const args: IArguments = {
-    'component-type': 'react',
-    port: 3000,
-  };
-  const server = await start(conf, args);
-  await supertest('http://localhost:3000')
-    .get('/')
-    .expect(200);
-  await new Promise(resolve => {
-    server.close(resolve);
+afterAll(() => {
+  clean();
+});
+
+const argsReact: IArguments = {
+  'component-type': 'react',
+  port: 3002,
+};
+const confReact: ICommandConf = {
+  'script-type': 'ts',
+  entry: './tests/webpack/index',
+};
+const argsVue: IArguments = {
+  'component-type': 'vue',
+  port: 3001,
+};
+
+const confVue: ICommandConf = {
+  'script-type': 'js',
+  entry: './tests/webpack/index_vue',
+};
+
+describe('dev server render should be success', () => {
+  test('react dev server render should be success', async () => {
+    expect.assertions(1);
+    const server = await start(confReact, argsReact);
+    const body = await new Promise(resolve => {
+      supertest(`http://localhost:${argsReact.port}`)
+        .get('/')
+        .expect(200)
+        .then(({ text }) => resolve(text));
+    });
+    expect(body).toMatch(/react/gi);
+    await new Promise(resolve => {
+      server.close(resolve);
+    });
+  });
+
+  test('vue dev server render should be success', async () => {
+    expect.assertions(1);
+    const server = await start(confVue, argsVue);
+    const body = await new Promise(resolve => {
+      supertest(`http://localhost:${argsVue.port}`)
+        .get('/')
+        .expect(200)
+        .then(({ text }) => resolve(text));
+    });
+    expect(body).toMatch(/vue/gi);
+    await new Promise(resolve => {
+      server.close(resolve);
+    });
   });
 });
 
 test('webpack build should be success ', async () => {
-  const args: IArguments = {
-    'component-type': 'react',
-  };
-  await build(conf, args);
   const cwd = process.cwd();
+  await build(confReact, argsReact);
   expect(existsSync(`${cwd}/build/dist`)).toBe(true);
   expect(existsSync(`${cwd}/build/lib`)).toBe(true);
   expect(existsSync(`${cwd}/build/module`)).toBe(true);
   expect(existsSync(`${cwd}/build/typings`)).toBe(true);
+
+  removeSync(`${cwd}/build`);
+
+  await build(confVue, argsVue);
+  expect(existsSync(`${cwd}/build/dist`)).toBe(true);
+  expect(existsSync(`${cwd}/build/lib`)).toBe(false);
+  expect(existsSync(`${cwd}/build/module`)).toBe(false);
+  expect(existsSync(`${cwd}/build/typings`)).toBe(false);
 });

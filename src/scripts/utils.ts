@@ -1,5 +1,5 @@
+import { emptyDirSync, outputFile, outputFileSync } from 'fs-extra';
 import * as path from 'path';
-import writeFile from 'write';
 import { scriptType, webpackComponent } from './config';
 
 interface IEntry {
@@ -15,6 +15,7 @@ export const tempEntryFile = (conf: IEntry): Promise<string> => {
     return Promise.resolve(componentFilePath);
   }
   const tempDir = path.resolve(__dirname, './.temp');
+  emptyDirSync(tempDir);
   const entryFilePath = path.resolve(
     tempDir,
     `./${conf.type}_entry.${conf.fileExtra}`,
@@ -36,7 +37,7 @@ export const tempEntryFile = (conf: IEntry): Promise<string> => {
         tempDir,
         `./react_hot_entry.${conf.fileExtra}`,
       );
-      writeFile.sync(
+      outputFileSync(
         hotEntryFilePath,
         `
         import App from '${componentFilePath}'
@@ -56,7 +57,7 @@ export const tempEntryFile = (conf: IEntry): Promise<string> => {
       break;
   }
 
-  return writeFile(entryFilePath, data, { flag: 'w+' }).then(
+  return outputFile(entryFilePath, data, { flag: 'w+' }).then(
     () => entryFilePath,
   );
 };

@@ -6,6 +6,7 @@ import * as path from 'path';
 import postcssPresetEnv from 'postcss-preset-env';
 import safeParser from 'postcss-safe-parser';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import { VueLoaderPlugin } from 'vue-loader';
 import Webpack, {
   Configuration,
   RuleSetLoader,
@@ -14,9 +15,8 @@ import Webpack, {
 } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import merge from 'webpack-merge';
-
 import { build as babelBuild } from './babel';
-import { IArguments, ICommandConf } from './config';
+import { IArguments, ICommandConf, webpackComponent } from './config';
 import { tempEntryFile } from './utils';
 
 interface ICssLoader extends RuleSetLoader {
@@ -31,6 +31,7 @@ type style = 'less' | 'css' | 'sass';
 export function styleLoaders(
   type?: style,
   mode?: Configuration['mode'],
+  ifVue: boolean = false,
 ): RuleSetRule[] {
   const loaders: RuleSetRule[] = [
     {
@@ -80,7 +81,11 @@ export function styleLoaders(
       use.push(`${type}-loader`);
     }
     if (mode === 'development') {
-      use.unshift('style-loader');
+      if (ifVue) {
+        use.unshift('vue-style-loader');
+      } else {
+        use.unshift('style-loader');
+      }
     } else {
       use.unshift(MiniCssExtractPlugin.loader);
     }
@@ -101,25 +106,32 @@ const baseConfig: Configuration = {
     new CleanWebpackPlugin(['build/dist'], {
       root: process.cwd(),
     }),
+    new VueLoaderPlugin(),
   ],
 };
-function genDevConfig(conf: ICommandConf): Configuration {
+
+function genDevConfig(
+  conf: ICommandConf,
+  componentType: webpackComponent,
+): Configuration {
+  const ifVue: boolean = componentType === 'vue';
   return {
     mode: 'development',
     devtool: 'eval-source-map',
     module: {
       rules: [
         {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+        },
+        {
+          exclude: [/\.vue$/],
           oneOf: [
             {
               test: /\.(js|jsx|ts|tsx)$/,
               include: [
                 path.resolve(process.cwd(), path.dirname(conf.entry)),
-                // parse temp file
-                path.resolve(
-                  process.cwd(),
-                  'node_modules/component-build-script',
-                ),
+                path.resolve(__dirname, './.temp'),
               ],
               use: [
                 {
@@ -155,15 +167,15 @@ function genDevConfig(conf: ICommandConf): Configuration {
             },
             {
               test: /\.css$/,
-              oneOf: styleLoaders('css', 'development'),
+              oneOf: styleLoaders('css', 'development', ifVue),
             },
             {
               test: /\.less$/,
-              oneOf: styleLoaders('less', 'development'),
+              oneOf: styleLoaders('less', 'development', ifVue),
             },
             {
               test: /\.(scss|sass)$/,
-              oneOf: styleLoaders('sass', 'development'),
+              oneOf: styleLoaders('sass', 'development', ifVue),
             },
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
@@ -191,6 +203,7 @@ function genDevConfig(conf: ICommandConf): Configuration {
     plugins: [
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'index.html'),
+        title: `CBS ${componentType.toUpperCase()} DEV SERVER`,
       }),
       new Webpack.HotModuleReplacementPlugin(),
     ],
@@ -210,6 +223,11 @@ const buildConfig: Configuration = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      },
+      {
+        exclude: [/\.vue$/],
         oneOf: [
           {
             test: /\.(js|jsx|ts|tsx)$/,
@@ -245,6 +263,10 @@ const buildConfig: Configuration = {
                 },
               },
             ],
+          },
+          {
+            test: /\.vue$/,
+            loader: 'vue-loader',
           },
           {
             test: /\.css$/,
@@ -326,7 +348,7 @@ export const start = (conf: ICommandConf, args: IArguments): Promise<any> => {
     const webpackConf: Configuration = merge(
       entryConfig,
       baseConfig,
-      genDevConfig(conf),
+      genDevConfig(conf, args['component-type']),
     );
     const devServerOptions = {
       compress: true,
@@ -336,6 +358,7 @@ export const start = (conf: ICommandConf, args: IArguments): Promise<any> => {
       lazy: false,
       quiet: false,
       noInfo: false,
+      open: true,
       clientLogLevel: 'none',
       stats: {
         colors: true,

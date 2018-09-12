@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import * as fs from 'fs';
+import { outputFile } from 'fs-extra';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
-import writeFile from 'write';
-
 import location from './i18n';
 
 export type component = webpackComponent | 'node';
@@ -81,12 +80,13 @@ function config(componentType: component): Promise<ICommandConf> {
         : {
             [componentType]: componentConfig,
           };
-      return writeFile(configPath, JSON.stringify(configFile, null, '  ')).then(
-        () => {
-          console.log(chalk.bgGreen(complete));
-          return componentConfig;
-        },
-      );
+      return outputFile(
+        configPath,
+        JSON.stringify(configFile, null, '  '),
+      ).then(() => {
+        console.log(chalk.bgGreen(complete));
+        return componentConfig;
+      });
     });
 }
 export default config;
