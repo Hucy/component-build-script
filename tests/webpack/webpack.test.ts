@@ -75,6 +75,7 @@ describe('dev server render should be success', () => {
 });
 
 test('webpack build should be success ', async () => {
+  jest.setTimeout(30000);
   const cwd = process.cwd();
   await build(confReact, argsReact);
   expect(existsSync(`${cwd}/build/dist`)).toBe(true);

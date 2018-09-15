@@ -404,16 +404,6 @@ export const build = (conf: ICommandConf, args: IArguments): Promise<void> => {
           reject(err);
           return;
         }
-
-        const info = stats.toJson();
-
-        if (stats.hasErrors()) {
-          console.error(info.errors);
-        }
-
-        if (stats.hasWarnings()) {
-          console.warn(info.warnings);
-        }
         console.log(
           stats.toString({
             // 增加控制台颜色开关
