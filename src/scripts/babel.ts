@@ -165,7 +165,7 @@ class Build {
       `./__style__/${fileInfo.name}${fileInfo.ext}.css`,
     );
     const outStyleDependFile = path.resolve(
-      dir,
+      fileInfo.dir,
       `./__style__/${fileInfo.name}${fileInfo.ext}.js`,
     );
 
