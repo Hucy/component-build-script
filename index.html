@@ -65,7 +65,74 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="component-build-script">component-build-script</h1>
-				<p>component build script</p>
+				<p><a href="https://circleci.com/gh/Hucy/component-build-script"><img src="https://circleci.com/gh/Hucy/component-build-script.svg?style=svg" alt="CircleCI"></a>
+					<a href="https://codecov.io/gh/Hucy/component-build-script"><img src="https://codecov.io/gh/Hucy/component-build-script/branch/master/graph/badge.svg" alt="codecov"></a>
+				<img src="https://img.shields.io/npm/types/chalk.svg" alt="npm type definitions"></p>
+				<p>English | <a href="./README-zh_CN.md">中文</a></p>
+				<p><code>component-build-script</code> is a command-line tool for quickly developing and building react, vue, and node components that help developers strip common components without having to worry about the configuration of the development environment. Support for ES and Typescript.</p>
+				<h2 id="command">command</h2>
+				<pre><code>  / ___|<span class="hljs-string"> </span>|<span class="hljs-string"> __ )  / ___</span>|
+ |<span class="hljs-string"> </span>|<span class="hljs-string">     </span>|<span class="hljs-string">  _ \  \___ \
+ </span>|<span class="hljs-string"> </span>|<span class="hljs-string">___  </span>|<span class="hljs-string"> </span>|<span class="hljs-string">_) </span>|<span class="hljs-string">  ___) </span>|<span class="hljs-string">  \____</span>|<span class="hljs-string"> </span>|<span class="hljs-string">____/  </span>|<span class="hljs-string">____/
+
+cbs &lt;command&gt;
+Commands:
+  cbs start &lt;component-type&gt;  start dev server
+  cbs build &lt;component-type&gt;  build
+
+Options:  --version  Show version number  [boolean]
+  --help     Show help  [boolean]</span></code></pre><h2 id="how-to-use">How to use</h2>
+				<ul>
+					<li><p>Create a project directory (if you can skip it):</p>
+						<p> <code>mkdir my-component</code></p>
+						<p> <code>cd my-component</code></p>
+					</li>
+					<li><p>Install <code>component-build-script</code> as a project development dependency (recommended)</p>
+						<p>  <code>npm install component-build-script -D</code></p>
+					</li>
+					<li><p>Set the npm script <code>package.json</code></p>
+					</li>
+				</ul>
+				<pre><code class="language-json">    {
+        <span class="hljs-attr">"scripts"</span>:{
+            <span class="hljs-attr">"start"</span>:<span class="hljs-string">"cbs start react"</span>,
+            <span class="hljs-attr">"build"</span>:<span class="hljs-string">"cbs build react"</span>
+        }
+    }</code></pre>
+				<p>  Note: For the first run, you will be asked to specify the entry file and development language.</p>
+				<h2 id="precautions-">Precautions:</h2>
+				<ul>
+					<li><p><code>component-build-script</code> is suitable for development components and is not suitable for applications. If you need to develop an application, you can choose the corresponding excellent tools, such as:<a href="https://github.com/facebook/create-react-app">create-react-app</a>,<a href="https://github.com/vuejs/vue-cli">vue-cli</a></p>
+					</li>
+					<li><p><code>cbs build</code> output path</p>
+						<ul>
+							<li><code>build/dist</code> : Webpack output file for browser use</li>
+							<li><code>build/lib</code> :<code>commonjs</code> file</li>
+							<li><code>build/module</code>: <code>Es module</code> file</li>
+							<li><code>build/typings</code>：<code>Typescript</code> .d.ts declaration file</li>
+						</ul>
+					</li>
+					<li><p><code>babel runtime</code> file, you need to write <code>runtime</code> file to <code>dependencies</code>
+						<a href="https://babeljs.io/docs/en/babel-plugin-transform-runtime">@babel/plugin-transform-runtime</a></p>
+					</li>
+				</ul>
+				<ul>
+					<li><p>Example <code>package.json</code></p>
+						<p> <code>`</code>js
+							// package.json
+						{</p>
+						<pre><code> <span class="hljs-string">"main"</span>: <span class="hljs-string">"build/lib/index.js"</span>,
+ <span class="hljs-string">"typings"</span>: <span class="hljs-string">"build/typings/index.d.ts"</span>,
+ <span class="hljs-string">"module"</span>: <span class="hljs-string">"build/module/index.js"</span>,
+ <span class="hljs-string">"scripts"</span>:{
+     <span class="hljs-string">"start"</span>:<span class="hljs-string">"cbs start react"</span>,
+     <span class="hljs-string">"build"</span>:<span class="hljs-string">"cbs build react"</span>
+ },
+ <span class="hljs-string">"dependencies"</span>:{
+     <span class="hljs-string">"@babel/runtime-corejs2"</span>: <span class="hljs-string">"^7.0.0"</span>
+ }</code></pre><p> }</p>
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -81,7 +148,7 @@
 					<li class=" tsd-kind-enum tsd-is-not-exported">
 						<a href="enums/typemap.html" class="tsd-kind-icon">type<wbr>Map</a>
 					</li>
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-is-not-exported">
 						<a href="classes/build.html" class="tsd-kind-icon">Build</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -126,6 +193,9 @@
 					<li class=" tsd-kind-type-alias tsd-is-not-exported">
 						<a href="globals.html#i18ntype" class="tsd-kind-icon">i18n<wbr>Type</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-is-not-exported">
+						<a href="globals.html#modtype" class="tsd-kind-icon">mod<wbr>Type</a>
+					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#scripttype" class="tsd-kind-icon">script<wbr>Type</a>
 					</li>
@@ -146,15 +216,6 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#componenttype" class="tsd-kind-icon">component<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-is-not-exported">
-						<a href="globals.html#configmap" class="tsd-kind-icon">config<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-is-not-exported">
-						<a href="globals.html#configpath" class="tsd-kind-icon">config<wbr>Path</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-is-not-exported">
-						<a href="globals.html#configured" class="tsd-kind-icon">configured</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#describe" class="tsd-kind-icon">describe</a>
@@ -184,6 +245,9 @@
 						<a href="globals.html#config" class="tsd-kind-icon">config</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#gendevconfig" class="tsd-kind-icon">gen<wbr>Dev<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#i18n" class="tsd-kind-icon">i18n</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -200,9 +264,6 @@
 					</li>
 					<li class=" tsd-kind-object-literal tsd-is-not-exported">
 						<a href="globals.html#buildconfig" class="tsd-kind-icon">build<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-is-not-exported">
-						<a href="globals.html#devconfig" class="tsd-kind-icon">dev<wbr>Config</a>
 					</li>
 				</ul>
 			</nav>
