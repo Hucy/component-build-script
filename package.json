@@ -1,6 +1,6 @@
 {
   "name": "component-build-script",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "description": "Command line tool for quickly building the react vue node browser component ",
   "main": "build/lib/index.js",
   "typings": "build/typings/index.d.ts",

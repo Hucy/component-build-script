@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.0-alpha.5"></a>
+# [0.1.0-alpha.5](https://github.com/Hucy/component-build-script/compare/v0.1.0-alpha.4...v0.1.0-alpha.5) (2018-09-18)
+
+
+### Bug Fixes
+
+*  fix dependency file path ([a8d9b3e](https://github.com/Hucy/component-build-script/commit/a8d9b3e))
+
+
+
 <a name="0.1.0-alpha.4"></a>
 # 0.1.0-alpha.4 (2018-09-18)
 
