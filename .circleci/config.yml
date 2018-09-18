@@ -70,10 +70,16 @@ workflows:
   version: 2
   test_build:
     jobs:
-      - install
+      - install:
+          filters:
+            tags:
+              only: /.*/
       - test_src:
           requires:
             - install
+          filters:
+            tags:
+              only: /.*/
       - build:
           requires:
             - test_src
@@ -92,8 +98,16 @@ workflows:
           type: approval
           requires:
             - build
-          #  - test_lib
-          #  - test_module
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - publish:
           requires:
             - hold
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
