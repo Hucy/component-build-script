@@ -7,7 +7,7 @@ import {
   removeSync,
   stat,
 } from 'fs-extra';
-import { render as lessRender } from 'less';
+import less from 'less';
 import { render as scssRender } from 'node-sass';
 import nodemon from 'nodemon';
 import * as path from 'path';
@@ -19,6 +19,8 @@ import * as shell from 'shelljs';
 import { ICommandConf } from './config';
 
 type modType = 'node' | 'es';
+
+const lessRender = less.render.bind(less);
 
 export const start = (conf: ICommandConf): Promise<void> => {
   const startFile = path.resolve(
