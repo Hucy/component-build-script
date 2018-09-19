@@ -79,3 +79,24 @@ Options:  --version  Show version number  [boolean]
             "@babel/runtime-corejs2": "^7.0.0"
         }
     }
+
+-  style file
+
+Style files enable ` CSS Modules` by default, ensuring style isolation. In developing `react` components, styles should be set correctly.
+
+```index.1.sass
+    .red{
+        color: red
+    }
+```
+
+```jsx
+    import React from 'react'
+    import style from './style/index.1.sass'
+    export default function Test() {
+        return <div className={style.red}>
+        testssss
+    </div>
+```
+
+-  Vue component only generates `dist` files

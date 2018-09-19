@@ -78,3 +78,24 @@ Options:  --version  Show version number  [boolean]
             "@babel/runtime-corejs2": "^7.0.0"
         }
     }
+
+-  样式文件
+
+样式文件默认启用 ` CSS Modules`,保证样式隔离，在开发 `react`组件是应该正确设置样式
+
+```index.1.sass
+    .red{
+        color: red
+    }
+```
+
+```jsx
+    import React from 'react'
+    import style from './style/index.1.sass'
+    export default function Test() {
+        return <div className={style.red}>
+        testssss
+    </div>
+```
+
+-  vue组件只生成`dist`文件
